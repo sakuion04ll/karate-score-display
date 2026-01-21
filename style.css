@@ -1,0 +1,218 @@
+@charset "UTF-8";
+
+/* 全体の基本設定 */
+body {
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    background-color: #000; /* 少し明るめの黒 */
+    color: white;
+    display: flex;      /* 横並びにする */
+    height: 100vh;     /* 画面の高さいっぱいに */
+    margin: 0;         /* 余白をなくす */
+    overflow: hidden;  /* スクロールバーを出さない */
+    padding: 0 50px; 
+    gap: 30px;
+}
+
+/* --- チームエリア（左右） --- */
+.team {
+    flex: 1; /* 左右の幅を均等に大きく取る */
+    display: flex;
+    flex-direction: column; /* 中身は縦並び */
+    box-sizing: border-box;  
+    justify-content: flex-start; 
+    padding-top: 20vh; /* 画面の高さの10%分、上からスペースを空ける */
+}
+
+/*チームごとに左右によせる */
+
+.aka {
+    align-items: flex-start; /* 赤チームは中身を左揃え */
+}
+.ao {
+    align-items: flex-end;   /* 青チームは中身を右揃え */
+}
+.aka .player-info {
+    text-align: left;
+}
+.ao .player-info {
+    text-align: right;
+}
+
+.aka .player-name {
+    text-align: left;
+    color: #e53935;
+}
+.ao .player-name {
+    text-align: right;
+    color: #1e88e5;
+}
+
+/* 選手情報 */
+.player-info {
+    margin-bottom: 40px;
+}
+.univ-name {
+    font-size: 3rem;
+    margin: 0;
+    line-height: 1;
+}
+.univ-name-eng {
+    font-size: 2rem;
+    margin: 0;
+    line-height: 1;
+}
+.player-name {
+    font-size: 4.5rem;
+    margin: 20px 0 0 0;
+    line-height: 1;
+    padding: 0;
+}
+.player-name-eng {
+    font-size: 2rem;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    opacity: 1;
+}
+
+/* --- 得点の丸 --- */
+.points-container {
+    display: flex;
+    gap: 15px; /* 丸と丸の間隔 */
+}
+
+.aka .circle {
+    display: flex;
+    border: 4px solid #e53935;
+}
+.ao .circle{
+    display: flex;
+    border: 4px solid #1e88e5; 
+}
+
+.circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: transparent; /* 初期状態は透明 */
+    transition: all 0.3s ease; /* 色が変わる時にふわっとさせる */
+}
+
+/* 赤チームの塗りつぶし */
+.aka .circle.filled {
+    background-color: #e53935; /* 赤チームの色 */
+    box-shadow: 0 0 15px #e53935;
+}
+
+/* 青チームの塗りつぶし */
+.ao .circle.filled {
+    background-color: #1e88e5; /* 青チームの色 */
+    box-shadow: 0 0 15px #1e88e5;
+}
+
+
+/* --- タイマーエリア（中央） --- */
+.timer-area {
+    flex: 0.6; /* 中央は少し狭く */
+    display: flex;
+    justify-content: center;
+    background-color: #000; /* タイマー背景を目立たせるなら */
+    z-index: 10; /* チームエリアより手前に表示 */
+}
+
+#timer {
+    font-size: 8rem; /* 非常に大きく */
+    font-weight: bold;
+    margin-top: 20px;
+    font-variant-numeric: tabular-nums; /* 数字の幅を等しくしてガタつきを防ぐ */
+}
+
+
+/* --- 得点カットインのスタイル --- */
+#cut-in-overlay {
+    /* 画面全体を覆う */
+    position: fixed;
+    bottom: 4vh; /* 画面の下端から少し浮かせる (5vh = 画面の高さの5%) */
+    
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto; /* 中身のテキスト幅に合わせる */
+    min-width: 50vw; /* 最低でも画面の横幅の半分は確保 */
+
+    height: auto;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    
+    padding: 20px 40px; 
+    gap: 40px;
+    
+    border-radius: 20px;
+
+    /* 普段は隠しておく */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease; /* フェードと移動（transform）も滑らかに */
+    z-index: 1000;
+}
+
+/* JSでこのクラスを付けると表示される */
+#cut-in-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* チームカラーの背景 */
+#cut-in-overlay.aka-bg {
+    background-color: rgba(229, 57, 53, 0.9); /* 赤 (少し透過) */
+}
+#cut-in-overlay.ao-bg {
+    background-color: rgba(30, 136, 229, 0.9); /* 青 (少し透過) */
+}
+#cut-in-overlay.midori-bg {
+    background-color: rgba(67, 198, 30, 0.9); /* 緑 (少し透過) */
+}
+
+.message-group {
+    display: flex;
+    flex-direction: column; /* 中身（日本語と英語）は縦並び */
+    align-items: center;
+    gap: 0;
+}
+
+/* カットインの文字 */
+#cut-in-text {
+    font-size: 4rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+    margin: 0;
+    line-height: 1;
+}
+#cut-in-points {
+    font-size: 4rem;
+    font-weight: bold;
+    color: yellow; /* ポイントは黄色で目立たせる */
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+    margin: 0;
+    line-height: 1;
+    
+}
+
+#cut-in-english {
+    font-size: 2rem; 
+    font-weight: normal;
+    color: #eee; 
+    margin-top: 0px; 
+}
+
+#cut-in-points-english {
+    font-size: 2rem; 
+    font-weight: normal;
+    color: #eee; 
+    margin-top: 0px; 
+}
+
